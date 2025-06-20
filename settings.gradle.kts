@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Offline-simulator"
-include(":app")
+include(":offline-ui-core")
  
