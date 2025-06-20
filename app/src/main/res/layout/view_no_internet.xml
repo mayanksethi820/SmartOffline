@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?><?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/noInternetRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:id="@+id/noInternetContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- Developers can change this image -->
+        <ImageView
+            android:id="@+id/noInternetImage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/no_internet_image_desc"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_no_internet" />
+
+        <!-- Developers can change this text -->
+        <TextView
+            android:id="@+id/noInternetMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/no_internet_message"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <!-- Retry button -->
+        <Button
+            android:id="@+id/btnRetryInternet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/retry" />
+
+    </LinearLayout>
+
+</FrameLayout>
