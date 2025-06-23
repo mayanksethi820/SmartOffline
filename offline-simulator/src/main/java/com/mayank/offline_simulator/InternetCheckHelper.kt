@@ -6,27 +6,45 @@ import androidx.lifecycle.*
 
 
 object InternetCheckHelper {
-    fun attachLifecycleObserver(owner: LifecycleOwner) {
-        if (owner is OfflineAware && owner is Context) {
-            owner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-                override fun onCreate(owner: LifecycleOwner) {
-                    val context = owner as Context
-                    val offlineAware = owner as OfflineAware
+    private val offlineAwareMap = mutableMapOf<LifecycleOwner, OfflineAware>()
 
-                    NetworkMonitor(context).isInternetAccessible { isOnline ->
-                        if (!isOnline) {
-                            when (offlineAware.getOfflinePolicy()) {
-                                OfflinePolicy.SHOW_OVERLAY -> NoInternetOverlay(context as Activity).show()
-                                OfflinePolicy.USE_DUMMY_DATA -> {
-                                    val key = offlineAware.getDummyDataKey()
-                                    val data = key?.let { OfflineDataRegistry.get<Any>(it) }
-                                    data?.let { offlineAware.onDummyDataReceived(it) }
+    fun register(owner: LifecycleOwner, offlineAware: OfflineAware) {
+        offlineAwareMap[owner] = offlineAware
+        attachLifecycleObserver(owner)
+    }
+
+    private fun attachLifecycleObserver(owner: LifecycleOwner) {
+        val context = owner as? Context ?: return
+        owner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onCreate(owner: LifecycleOwner) {
+                NetworkMonitor(context).isInternetAccessible { isOnline ->
+                    if (!isOnline) {
+                        val aware = offlineAwareMap[owner]
+                        when (aware?.getOfflinePolicy()) {
+                            OfflinePolicy.SHOW_OVERLAY -> NoInternetOverlay(context as Activity).show()
+                            OfflinePolicy.USE_DUMMY_DATA -> {
+                                val key = aware.getDummyDataKey()
+                                val data = key?.let { OfflineDataRegistry.get<Any>(it) }
+                                if (data != null) {
+                                    aware.onDummyDataReceived(data)
+                                } else {
+                                    // fallback if dummy data not registered
+                                    NoInternetOverlay(context as Activity).show()
                                 }
+                            }
+                            else -> {
+                                // fallback if OfflineAware not provided
+                                NoInternetOverlay(context as Activity).show()
                             }
                         }
                     }
                 }
-            })
-        }
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                offlineAwareMap.remove(owner)
+            }
+        })
     }
 }
+
