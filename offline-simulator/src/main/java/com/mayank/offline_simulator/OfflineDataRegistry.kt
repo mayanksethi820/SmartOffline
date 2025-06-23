@@ -1,5 +1,6 @@
 package com.mayank.offline_simulator
 
+
 object OfflineDataRegistry {
     private val data = mutableMapOf<String, Any>()
 

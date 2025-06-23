@@ -3,3 +3,6 @@ jdk:
 
 gradle:
   module: offline-ui-core
+
+before_install:
+  - ./scripts/prepareJitpackEnvironment.sh

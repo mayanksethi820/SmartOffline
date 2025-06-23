@@ -4,9 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.widget.Switch
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.Switch
 import androidx.appcompat.app.AlertDialog
 
 class DebugOverlay : Application.ActivityLifecycleCallbacks {

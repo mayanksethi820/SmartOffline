@@ -2,8 +2,8 @@ package com.mayank.offline_simulator
 
 import android.app.Activity
 import android.content.Context
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.*
+
 
 object InternetCheckHelper {
     fun attachLifecycleObserver(owner: LifecycleOwner) {
@@ -30,4 +30,3 @@ object InternetCheckHelper {
         }
     }
 }
-

@@ -5,10 +5,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -32,10 +29,7 @@ class NetworkMonitor(private val context: Context) {
             } catch (e: IOException) {
                 false
             }
-
-            withContext(Dispatchers.Main) {
-                callback(result)
-            }
+            withContext(Dispatchers.Main) { callback(result) }
         }
     }
 

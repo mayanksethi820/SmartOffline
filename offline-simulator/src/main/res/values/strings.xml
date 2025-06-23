@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_internet_image_desc">No Internet Icon</string>
+    <string name="no_internet_message">You’re offline. Please check your connection.</string>
+    <string name="retry">Retry</string>
+</resources>
