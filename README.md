@@ -1,59 +1,60 @@
-# offline-simulator
-Android library to simulate offline mode by detecting real internet access, displaying a customizable "No Internet" overlay, and allowing developers to inject dummy data for a seamless offline experience.
+# 📴 SmartOffline
 
-# 📴 Offline UI Simulator
+**SmartOffline** is a lightweight Android library that allows developers to simulate offline mode by:
 
-[![Platform](https://img.shields.io/badge/platform-android-green.svg)](https://developer.android.com)
-[![Kotlin](https://img.shields.io/badge/language-kotlin-orange.svg)](https://kotlinlang.org)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-Offline UI Simulator is a lightweight Android library that allows developers to:
-- Detect **true internet availability**, not just connection.
-- Show a **customizable "No Internet" overlay** on any screen.
-- Provide **dummy fallback data** when the user is offline.
-- Simulate offline mode during development via a debug switch.
+- Detecting actual internet availability (not just network connectivity)
+- Showing a customizable "No Internet" overlay
+- Injecting dummy data for seamless offline user experience
+- Simulating offline mode during development with a debug switch
 
 ---
 
 ## ✨ Features
 
-✅ Detects actual internet access using `generate_204` test  
-✅ Overlay view with retry option  
-✅ Support for XML and Jetpack Compose apps  
-✅ Dummy data registry for offline fallback  
-✅ Retrofit support using `OfflineInterceptor`  
-✅ Easy integration with minimal setup
+- ✅ Detects true internet access using `generate_204` endpoint  
+- ✅ Shows overlay when offline (fully customizable)  
+- ✅ Supports both XML and Jetpack Compose apps  
+- ✅ Optional dummy data registry for offline fallback  
+- ✅ Retrofit support via `OfflineInterceptor`  
+- ✅ Debug toggle switch for development-time simulation  
 
 ---
 
 ## 📦 Installation
 
-<details>
-<summary><strong>Via local module (recommended for development)</strong></summary>
+### 🔧 Option 1: Local Module (Recommended for Development)
 
-1. Clone or download this repository.
-2. In your app's `settings.gradle.kts`:
+1. Clone or copy the `offline-simulator` module into your project  
+2. In `settings.gradle.kts`:
+   ```kotlin
+   include(":offline-simulator")
+   ```
+3. In your app-level `build.gradle.kts`:
+   ```kotlin
+   implementation(project(":offline-simulator"))
+   ```
 
-```kotlin
-include(":offline-ui-core")
-project(":offline-ui-core").projectDir = File("../OfflineUiSimulator/offline-ui-core")
-```
+### ☁️ Option 2: JitPack (After Publishing)
 
-3. In `app/build.gradle.kts`:
+1. Add this to `settings.gradle.kts`:
+   ```kotlin
+   dependencyResolutionManagement {
+       repositories {
+           maven { url = uri("https://jitpack.io") }
+       }
+   }
+   ```
 
-```kotlin
-dependencies {
-    implementation(project(":offline-ui-core"))
-}
-```
-
-</details>
+2. In `build.gradle.kts`:
+   ```kotlin
+   implementation("com.github.mayanksethi820:SmartOffline:1.0.0")
+   ```
 
 ---
 
 ## 🚀 Usage
 
-### 1. Implement `OfflineAware` in your Activity/Fragment:
+### 1. Implement `OfflineAware` (Optional)
 
 ```kotlin
 class ProductActivity : AppCompatActivity(), OfflineAware {
@@ -71,14 +72,16 @@ class ProductActivity : AppCompatActivity(), OfflineAware {
 
     override fun onDummyDataReceived(data: Any) {
         val productList = data as List<Product>
-        // Show dummy data
+        // Show fallback UI
     }
 }
 ```
 
+> 🔸 Implement `OfflineAware` only if you want to use dummy data on offline mode.
+
 ---
 
-### 2. Register Dummy Data
+### 2. Register Dummy Data (Optional)
 
 ```kotlin
 OfflineDataRegistry.register("products", listOf(Product("Sample", "₹99")))
@@ -86,7 +89,7 @@ OfflineDataRegistry.register("products", listOf(Product("Sample", "₹99")))
 
 ---
 
-### 3. Add the `OfflineInterceptor` to Retrofit (Optional)
+### 3. Add Interceptor to Retrofit (Optional)
 
 ```kotlin
 val client = OkHttpClient.Builder()
@@ -96,9 +99,9 @@ val client = OkHttpClient.Builder()
 
 ---
 
-### 4. Customize Overlay View
+### 4. Customize Overlay Layout
 
-Edit `view_no_internet.xml` in your layout folder:
+Edit `view_no_internet.xml`:
 
 ```xml
 <ImageView
@@ -121,7 +124,7 @@ Edit `view_no_internet.xml` in your layout folder:
 
 ## 🧪 Debug Mode
 
-Enable the debug toggle switch in development:
+Simulate offline state manually in development with a UI switch:
 
 ```kotlin
 class App : Application() {
@@ -134,23 +137,23 @@ class App : Application() {
 
 ---
 
+## 💡 Coming Soon
+
+- Jetpack Compose overlay  
+- LiveData / StateFlow support  
+- Dark mode theme support  
+- Callbacks for internet status events  
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License.  
-See [LICENSE](LICENSE) for more details.
+See the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 💡 Coming Soon
+## 🙌 Contributions
 
-- LiveData or StateFlow support  
-- Jetpack Compose overlay  
-- Dark mode theme customization  
-- No-internet event callbacks
-
----
-
-## ✨ Contributions Welcome
-
-Feel free to submit issues, pull requests, or feature suggestions!
-
+Pull requests, feature suggestions, and issues are welcome!  
+Let’s build smarter offline-first experiences together. 🚀
