@@ -22,20 +22,6 @@
 
 ## 📦 Installation
 
-### 🔧 Option 1: Local Module (Recommended for Development)
-
-1. Clone or copy the `offline-simulator` module into your project  
-2. In `settings.gradle.kts`:
-   ```kotlin
-   include(":offline-simulator")
-   ```
-3. In your app-level `build.gradle.kts`:
-   ```kotlin
-   implementation(project(":offline-simulator"))
-   ```
-
-### ☁️ Option 2: JitPack (After Publishing)
-
 1. Add this to `settings.gradle.kts`:
    ```kotlin
    dependencyResolutionManagement {
