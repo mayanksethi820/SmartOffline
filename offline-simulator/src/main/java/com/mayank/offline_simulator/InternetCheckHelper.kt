@@ -1,50 +1,45 @@
 package com.mayank.offline_simulator
 
 import android.app.Activity
-import android.content.Context
-import androidx.lifecycle.*
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 object InternetCheckHelper {
-    private val offlineAwareMap = mutableMapOf<LifecycleOwner, OfflineAware>()
+    fun attachLifecycleObserver(owner: LifecycleOwner) {
+        if (owner is OfflineAware && owner is Activity) { // 🔁 Note: Activity instead of Context
+            owner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onCreate(owner: LifecycleOwner) {
+                    val offlineOwner = owner as OfflineAware
+                    val activity = owner as Activity // ✅ Now it's an Activity
 
-    fun register(owner: LifecycleOwner, offlineAware: OfflineAware) {
-        offlineAwareMap[owner] = offlineAware
-        attachLifecycleObserver(owner)
-    }
-
-    private fun attachLifecycleObserver(owner: LifecycleOwner) {
-        val context = owner as? Context ?: return
-        owner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onCreate(owner: LifecycleOwner) {
-                NetworkMonitor(context).isInternetAccessible { isOnline ->
-                    if (!isOnline) {
-                        val aware = offlineAwareMap[owner]
-                        when (aware?.getOfflinePolicy()) {
-                            OfflinePolicy.SHOW_OVERLAY -> NoInternetOverlay(context as Activity).show()
-                            OfflinePolicy.USE_DUMMY_DATA -> {
-                                val key = aware.getDummyDataKey()
-                                val data = key?.let { OfflineDataRegistry.get<Any>(it) }
-                                if (data != null) {
-                                    aware.onDummyDataReceived(data)
-                                } else {
-                                    // fallback if dummy data not registered
-                                    NoInternetOverlay(context as Activity).show()
+                    NetworkMonitor(activity).isInternetAccessible { isOnline ->
+                        if (!isOnline) {
+                            when (offlineOwner.getOfflinePolicy()) {
+                                OfflinePolicy.SHOW_OVERLAY -> NoInternetOverlay(activity).show()
+                                OfflinePolicy.USE_DUMMY_DATA -> {
+                                    val provider = offlineOwner.getOfflineDataProvider()
+                                    if (provider != null) {
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            val data = provider()
+                                            withContext(Dispatchers.Main) {
+                                                offlineOwner.onDummyDataReceived(data)
+                                            }
+                                        }
+                                    }
                                 }
-                            }
-                            else -> {
-                                // fallback if OfflineAware not provided
-                                NoInternetOverlay(context as Activity).show()
                             }
                         }
                     }
                 }
-            }
-
-            override fun onDestroy(owner: LifecycleOwner) {
-                offlineAwareMap.remove(owner)
-            }
-        })
+            })
+        }
     }
 }
+
+
 

@@ -3,9 +3,9 @@ package com.mayank.offline_simulator
 interface OfflineAware {
     fun getOfflinePolicy(): OfflinePolicy
 
-    fun getDummyDataKey(): String? = null
+    // Optional
+    fun getOfflineDataProvider(): (suspend () -> Any)? = null
 
-    fun onDummyDataReceived(data: Any) {
-        // Optional to override
-    }
+    // Called only if policy is USE_DUMMY_DATA
+    fun onDummyDataReceived(data: Any)
 }
